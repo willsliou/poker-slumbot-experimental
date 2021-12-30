@@ -299,11 +299,29 @@ def PlayHand(token):
 # =======================================================================
 # =======================================================================
 
+    # Understanding hole card syntax. All suits are represented as lowercase letters. Spades(s), Clubs(c), Hearts(h), Diamonds (d).
+    # Actions taken by the player are Check('k'), Call ('c'), Fold('f), Bet('b').
+          
+    # Initialize strong hands in map data structure
+      # Key, value pairs
+      # Keys are represented as rank, then suit. Ace of Spades is represented as 'As'.
+      # First character in value is represented as Ace = 1, King = 13
+      # Second character in value is represented as Spade = 0, Diamond = 1, Clubs = 2, Hearts = 3
+        my_strong_hands = {'As': 10, 'Ad': 11, 'Ac': 12, 'Ah': 13}
+        print(hole_cards)
+        for card in hole_cards:
+          if card in my_strong_hands:
+            r = Act(token, 'c')
+            
+        # if hole_cards == 'As':
 
+    # If AA, KK, QQ, JJ, raise
+      
+        
 
 # =======================================================================    
 # =======================================================================
-# ============================= BEGIN STRATEGY ==========================
+# ============================= END STRATEGY ============================
 # =======================================================================
 # =======================================================================
 
