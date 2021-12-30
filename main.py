@@ -284,14 +284,29 @@ def PlayHand(token):
         if 'error' in a:
             print('Error parsing action %s: %s' % (action, a['error']))
             sys.exit(-1)
-        # This sample program implements a naive strategy of "always check or call".
-        if a['last_bettor'] != -1:
-            incr = 'c'
-        else:
-            incr = 'k'
-        print('Sending incremental action: %s' % incr)
-        r = Act(token, incr)
-    # Should never get here
+
+          
+# This sample program implements a naive strategy of "always check or call".
+        # if a['last_bettor'] != -1:
+        #     incr = 'c'
+        # else:
+        #     incr = 'k'
+        # print('Sending incremental action: %s' % incr)
+        # r = Act(token, incr)
+# =======================================================================    
+# =======================================================================
+# ============================= BEGIN STRATEGY ==========================
+# =======================================================================
+# =======================================================================
+
+
+
+# =======================================================================    
+# =======================================================================
+# ============================= BEGIN STRATEGY ==========================
+# =======================================================================
+# =======================================================================
+
 
         
 def Login(username, password):
