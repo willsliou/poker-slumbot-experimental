@@ -45,8 +45,8 @@ class Player:
     print("Folding")
 
   def bet(self, betSize):
-    chips = chips - betSize
-    return
+    # GameState.betSize = betSize
+    self.chips = self.chips - betSize
 
   def check(self):
     return
@@ -66,9 +66,12 @@ class Card:
     
 
 
-# class Game:
-    # def setBet():
-
+class GameState:
+    def __init__(self, currAction, betSize):
+      self.currAction = currAction
+      self.betSize = betSize
+    # def setBet(size):
+      
       
     
 #   def playGame():
@@ -81,10 +84,13 @@ d = Dealer()
 d.reset()
 d.shuffle()
 
-
+g = GameState(0, 0)
 # Deal cards to players
 p1 = Player('Joe Biden', 1000)
 p2 = Player('Trump', 1000)
+players = []
+players.append(p1)
+players.append(p2)
 
 p1.hand.append(d.deal())
 p1.hand.append(d.deal())
@@ -92,6 +98,37 @@ p2.hand.append(d.deal())
 p2.hand.append(d.deal())
 print("Player 1: ", p1.hand)
 print("Player 2: ", p2.hand)
+
+action = input("Choose an action. Check: 'k', Call: 'c', Bet: 'b', Fold: 'f' ")
+
+for p in players:
+  # If someone raised, change actions to Call, Raise, or Fold
+  if g.betSize > 0:
+    action = input("Choose an action. Call: 'c', Raise: 'b', Fold: 'f'")
+  # If player calls, reduce global betSize to 0
+  if action == 'c':
+    g.betSize = 0
+    
+  # Player checks
+  if action == 'k':
+    print("Player checks")
+  # If Player bets, ask for input. Re
+  elif action == 'b':
+    print("Player bets")
+    betSize_ = int(input("Input your bet size: "))
+    p.bet(betSize_)
+    g.betSize += betSize_
+  
+  
+  print("Global betsize:", g.betSize)
+
+
+
+  
+
+
+
+# If Player has strong hand, raise
 
 # Flop
 d.community_cards.append(d.deal())
