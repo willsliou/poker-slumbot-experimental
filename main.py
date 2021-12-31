@@ -5,6 +5,7 @@ class Dealer:
     # self.deck = [None] * 52 # Initialize fixed array size
     self.deck = []
     self.pot = 0
+    self.community_cards = []
 
   # Shuffle deck
   def shuffle(self):
@@ -89,13 +90,20 @@ p1.hand.append(d.deal())
 p1.hand.append(d.deal())
 p2.hand.append(d.deal())
 p2.hand.append(d.deal())
+print("Player 1: ", p1.hand)
+print("Player 2: ", p2.hand)
 
-  
-
-  
-  
-  
-
+# Flop
+d.community_cards.append(d.deal())
+d.community_cards.append(d.deal())
+d.community_cards.append(d.deal())
+print("Flop: ", d.community_cards)
+# Turn
+d.community_cards.append(d.deal())
+print("Turn: ", d.community_cards)
+# River
+d.community_cards.append(d.deal())
+print("River: ", d.community_cards)
 
 # startGame()
     
