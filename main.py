@@ -49,7 +49,7 @@ class Player:
     self.chips = self.chips - betSize
 
   def check(self):
-    return
+    print("Check")
   
 
 
@@ -85,10 +85,18 @@ d.reset()
 d.shuffle()
 
 g = GameState(0, 0)
+players = [] # Player array to store all total players
+turnCounter = 0
 # Deal cards to players
+# numPlayers = input("Enter total number of players: ")
+# startingChips = input("Enter starting chip size: ")
+
+# for i in range(numPlayers):
+#   input_player_name =  input("Enter name: ")
+# # Append new player to player array
+#   players.append(Player(input_player_name, startingChips))
 p1 = Player('Joe Biden', 1000)
 p2 = Player('Trump', 1000)
-players = []
 players.append(p1)
 players.append(p2)
 
@@ -99,48 +107,76 @@ p2.hand.append(d.deal())
 print("Player 1: ", p1.hand)
 print("Player 2: ", p2.hand)
 
-action = input("Choose an action. Check: 'k', Call: 'c', Bet: 'b', Fold: 'f' ")
+# action = input("Choose an action. Check: 'k', Call: 'c', Bet: 'b', Fold: 'f' ")
 
-for p in players:
-  # If someone raised, change actions to Call, Raise, or Fold
-  if g.betSize > 0:
-    action = input("Choose an action. Call: 'c', Raise: 'b', Fold: 'f'")
-  # If player calls, reduce global betSize to 0
-  if action == 'c':
-    g.betSize = 0
+# Simulate full round with 3 turns. (Preflop, Flop, Turn, River)
+for i in range(0, 3):
+  # while g.betSize > 0:
+  # j represents the current player
+  playerCounter = 0
+  j = 0
+  while (playerCounter < len(players) or g.betSize > 0):
+    currPlayer = players[j]
+    # If someone raised, change actions to Call, Raise, or Fold
+    if g.betSize > 0:
+      action = input("Choose an action. Call: 'c', Raise: 'b', Fold: 'f'")
+    # Else ask for normal input
+    else:
+      action = input("Choose an action. Check: 'k', Bet: 'b', Fold: 'f' ")
+  
+  
+  
     
-  # Player checks
-  if action == 'k':
-    print("Player checks")
-  # If Player bets, ask for input. Re
-  elif action == 'b':
-    print("Player bets")
-    betSize_ = int(input("Input your bet size: "))
-    p.bet(betSize_)
-    g.betSize += betSize_
+    # Player calls, reduce global betSize to 0
+    if action == 'c':
+      g.betSize = 0
+      
+    # Player bets, ask for input. Call Player.bet() to reduce individual player chip size. Increase global bet size.
+    elif action == 'b':
+      print("Player bets")
+      betSize_ = int(input("Input your bet size: "))
+      currPlayer.bet(betSize_)
+      g.betSize += betSize_
+    
+    # Player checks, continue to next round
+    elif action == 'k':
+      currPlayer.check()
+      # print("Player checks")
   
+    # Player folds, muck cards
+    elif action == 'f':
+      currPlayer.fold()
+
+    playerCounter += 1
+    j = playerCounter % len(players) # Cycle between players using mod
+
+  # Use flop
+  if turnCounter == 0:
+    d.community_cards.append(d.deal())
+    d.community_cards.append(d.deal())
+    d.community_cards.append(d.deal())
+    print(d.community_cards)
+  else:
+    d.community_cards.append(d.deal())
+    print(d.community_cards)
+  turnCounter += 1
   
+
   print("Global betsize:", g.betSize)
 
 
 
-  
-
-
-
-# If Player has strong hand, raise
-
-# Flop
-d.community_cards.append(d.deal())
-d.community_cards.append(d.deal())
-d.community_cards.append(d.deal())
-print("Flop: ", d.community_cards)
-# Turn
-d.community_cards.append(d.deal())
-print("Turn: ", d.community_cards)
-# River
-d.community_cards.append(d.deal())
-print("River: ", d.community_cards)
+# # Flop
+# d.community_cards.append(d.deal())
+# d.community_cards.append(d.deal())
+# d.community_cards.append(d.deal())
+# print("Flop: ", d.community_cards)
+# # Turn
+# d.community_cards.append(d.deal())
+# print("Turn: ", d.community_cards)
+# # River
+# d.community_cards.append(d.deal())
+# print("River: ", d.community_cards)
 
 # startGame()
     
