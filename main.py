@@ -90,7 +90,7 @@ class GameState:
       # Create deck
       self.deck = Deck()
       self.players = []
-      self.atFlop = True
+      self.roundNumber = 0 # Tracks if we are at the flop, turn, or river
       self.community_cards = [] # board
       self.startingChips = startingChips
     """
@@ -99,14 +99,14 @@ class GameState:
     rollingBetSize is the total of all bets. Increase rollingBetSize by value of new bet.
     """
     def setBet(self, betSize_):
-      g.betSize = betSize_
-      g.rollingBetSize += betSize_
+      self.betSize = betSize_
+      self.rollingBetSize += betSize_
 
     # Asks for a valid input from the user. Returns the action
     def askValidInput(self):
       # Ask for a valid action
       # If someone raised, change actions to Call, Raise, or Fold
-      if g.betSize > 0:
+      if self.betSize > 0:
         action = input("Choose an action. Call: 'c', Raise: 'b', Fold: 'f'")
       # Else ask for normal input
       else:
@@ -115,7 +115,8 @@ class GameState:
       return action
 
     # If one turn has finished, reset values and add all bets to pot
-    def turnFinished(self):
+    def endTurn(self):
+      # If all players have finished their turn)
       if self.remainingPlayerTurns == 0:
         # Add all bets into pot
         self.pot += self.rollingBetSize
@@ -123,10 +124,14 @@ class GameState:
         self.betSize = 0
         # Reset rollingSum of all bets
         self.rollingBetSize = 0
+        # Move from preflop to flop, increment round counter by 1
+        self.roundNumber += 1
         print("g.pot at end of all turns: ", self.pot)
+      return True
 
     def flop(self):
-      if self.remainingPlayerTurns == 0 and self.atFlop:
+      # If all players have finished their turn and we are at the flop)
+      if self.remainingPlayerTurns == 0 and self.roundNumber == 1:
         self.community_cards.append(self.deck.deal())
         self.community_cards.append(self.deck.deal())
         self.community_cards.append(self.deck.deal())
@@ -134,9 +139,13 @@ class GameState:
         print(self.community_cards)
 
     def turn(self):
+      # If all players have finished their turn and we are at the turn)
+      if self.remainingPlayerTurns == 0 and self.roundNumber == 2:
           self.community_cards.append(self.deck.deal())
           print(self.community_cards)
     def river(self):
+      # If all players have finished their turn and we are at the river)
+      if self.remainingPlayerTurns == 0 and self.roundNumber == 3:
           self.community_cards.append(self.deck.deal())
           print(self.community_cards)
       
@@ -169,7 +178,7 @@ class GameState:
       for i in range(0, 3):
         # j represents the current player, totalTurns represents total turns
         self.remainingPlayerTurns = self.numPlayers
-        while (g.remainingPlayerTurns > 0):
+        while (self.remainingPlayerTurns > 0):
           currPlayer = self.players[currPlayer_i]
           print(currPlayer.name, "'s turn'")
 
@@ -211,14 +220,14 @@ class GameState:
 
           # Change variables needed for for-loop and while-loop
           # Decrement number of turns needed to advance to next community card
-          g.remainingPlayerTurns -= 1
+          self.remainingPlayerTurns -= 1
           totalTurns += 1
           # print("totalTurns: ", totalTurns)
           currPlayer_i = totalTurns % len(self.players) # Cycle between players using mod
           # print("currPlayer_i: ", currPlayer_i)
-          print("g.remainingPlayerTurns", self.remainingPlayerTurns)
-          print("g.betSize: ", self.betSize)
-          print("g.rollingBetSize: ", self.rollingBetSize)
+          print("self.remainingPlayerTurns", self.remainingPlayerTurns)
+          print("self.betSize: ", self.betSize)
+          print("self.rollingBetSize: ", self.rollingBetSize)
           ################################
           ######## END OF IF LOOP ########
           ################################
@@ -226,17 +235,16 @@ class GameState:
         ################################
         ######## IN WHILE LOOP #########
         ################################
-          
+        
         # After all players have taken their turns.
-        self.turnFinished()
+        self.endTurn()
         # Flop turns three cards.
         self.flop()
-        # Turn and river flips one community card.
         self.turn()
         self.river()
         
         
-        print("Pot size:", g.pot)
+        print("Pot size:", self.pot)
 
 
   # Prepare game
