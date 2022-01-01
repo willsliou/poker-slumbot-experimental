@@ -198,6 +198,8 @@ class GameState:
 
     def flop(self):
       # If all players have finished their turn and we are at the flop)
+      print("flop")
+      print(self.roundNumber)
       if self.remainingPlayerTurns == 0 and self.roundNumber == 1:
         self.community_cards.append(self.d.deal())
         self.community_cards.append(self.d.deal())
@@ -297,10 +299,10 @@ class GameState:
         # while players still have turns to play and more than 1 player is in the game (not folded)
         while (self.remainingPlayerTurns > 0 and self.playersLeft > 1 and not self.isEnd):          
           currPlayer = self.players[self.currPlayer_i % len(self.players)] # Cycles through players
-          print(currPlayer.name, "'s turn'")
 
           # If current player has not folded, ask for input
           if not currPlayer.isFolded:
+            print(currPlayer.name, "'s turn'")
             # Ask for a valid input
             action = g.askValidInput()
             ################################
@@ -348,11 +350,11 @@ class GameState:
                 print("All players have folded.")
                 break
   
-          # playersOut = len(self.players) - playersLeft
+            # playersOut = len(self.players) - playersLeft
           self.remainingPlayerTurns -= 1
-          # print("playersLeft: ", playersLeft)
+          print("self.remainingPlayerTurns: ", self.remainingPlayerTurns)
           self.currPlayer_i+=1
-          # totalTurns += 1
+            # totalTurns += 1
 
             ################################
             ######## END OF IF LOOP ########
@@ -363,35 +365,26 @@ class GameState:
         ################################
 
         # evaluateWinner()
-        
+        self.roundNumber+=1 # Finished 1 round. Move onto flop 
+
         if not self.isEnd:
           # After all players have taken their turns.
           self.endTurnReset()
           # Flop turns three cards.
-          print("flop")
+          # print("flop")
           self.flop()
           self.turn()
           self.river()
           i+=1
-        
-        
-        # print("Pot size:", self.pot)
-
-
-        
-
-
-
-# d = Deck()
-
-# d.deal_initial([hand], 5)
-# print(hand)
 
 
 
     
   # def startGame():
 # g = GameState(0, 0, 0, numPlayers)
-g = GameState(0, 0, 0, 6, 1000)
-g.setupGame()
-g.playGame()
+for i in range(2):
+  print("######## New Game: ########", i)
+  g = GameState(0, 0, 0, 6, 1000)
+  g.setupGame()
+  g.playGame()
+
