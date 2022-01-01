@@ -114,6 +114,8 @@ class GameState:
       self.community_cards = [] # board
       self.startingChips = startingChips
       self.isEnd = False
+      self.currPlayer_i=0
+      self.playersLeft = 0
     """
     Set a bet. 
     Current bet to be matched is betSize.
@@ -192,9 +194,7 @@ class GameState:
         # Reset rollingSum of all bets
         self.rollingBetSize = 0
         # Move from preflop to flop, increment round counter by 1
-        self.roundNumber += 1
-        print("g.pot at end of all turns: ", self.pot)
-      return True
+        # self.roundNumber += 1
 
     def flop(self):
       # If all players have finished their turn and we are at the flop)
@@ -281,28 +281,25 @@ class GameState:
       If player calls, subtract current player's chipsize with bet size.
         
       """
-      currPlayer_i = 0
-      totalTurns = 0
-      playersLeft = len(self.players) # Players that have not folded
-      lastPlayer = 0
+      self.currPlayer_i = 0
+      # totalTurns = 0
+      self.playersLeft = len(self.players) # Players that have not folded
       # 3 total rounds
       # for i in range(0, 3):
       i=0
-      playersOut = 0
+      # playersOut = 0
       # while we play less than 3 rounds and more than 1 player is in the game (no folded)
-      while (i < 3 and playersLeft > 1 and not self.isEnd):
-
+      while (i < 3 and self.playersLeft > 1 and not self.isEnd):
         self.strengthOfHand()
-
         
         # j represents the current player, totalTurns represents total turns
         self.remainingPlayerTurns = self.numPlayers
         # while players still have turns to play and more than 1 player is in the game (not folded)
-        while (self.remainingPlayerTurns > 0 and playersLeft > 1 and not self.isEnd):          
-          currPlayer = self.players[currPlayer_i % len(self.players)]
+        while (self.remainingPlayerTurns > 0 and self.playersLeft > 1 and not self.isEnd):          
+          currPlayer = self.players[self.currPlayer_i % len(self.players)] # Cycles through players
           print(currPlayer.name, "'s turn'")
 
-          # If current player has not folded
+          # If current player has not folded, ask for input
           if not currPlayer.isFolded:
             # Ask for a valid input
             action = g.askValidInput()
@@ -338,32 +335,25 @@ class GameState:
             # Player folds, muck cards
             elif action == 'f':
               currPlayer.fold()
-              playersLeft -= 1
+              self.playersLeft -= 1
   
-              if (playersLeft == 1):
+              if (self.playersLeft == 1):
                 # Update original self.players array with new winner and total chips
                 for p in self.players:
                   if p.isFolded == False:
-                    self.endTurnAddPot()
+                    self.endTurnAddPot() # Add all bets into pot
                     p.chips = g.pot
                     print("Updating ", p.name, "'s chips to$", g.pot)
                 self.isEnd = True
                 print("All players have folded.")
+                break
   
-          playersOut = len(self.players) - playersLeft
-          # print("playersOut: ", playersOut)
-          # print("self.remainingPlayerTurns", self.remainingPlayerTurns)
+          # playersOut = len(self.players) - playersLeft
           self.remainingPlayerTurns -= 1
           # print("playersLeft: ", playersLeft)
+          self.currPlayer_i+=1
+          # totalTurns += 1
 
-          lastPlayer = currPlayer
-          currPlayer_i+=1
-          totalTurns += 1
-
-            # Change variables needed for for-loop and while-loop
-            # Decrement number of turns needed to advance to next community card
-            # print("self.betSize: ", self.betSize)
-            # print("self.rollingBetSize: ", self.rollingBetSize)
             ################################
             ######## END OF IF LOOP ########
             ################################
@@ -374,17 +364,18 @@ class GameState:
 
         # evaluateWinner()
         
-          
-        # After all players have taken their turns.
-        self.endTurnReset()
-        # Flop turns three cards.
-        self.flop()
-        self.turn()
-        self.river()
-        i+=1
+        if not self.isEnd:
+          # After all players have taken their turns.
+          self.endTurnReset()
+          # Flop turns three cards.
+          print("flop")
+          self.flop()
+          self.turn()
+          self.river()
+          i+=1
         
         
-        print("Pot size:", self.pot)
+        # print("Pot size:", self.pot)
 
 
         
