@@ -1,3 +1,4 @@
+import doctest
 # import random
 # import itertools
 # from Card import Card
@@ -15,5 +16,12 @@ numGames = 2
   # print("######## New Game: ########", i)
 g = GameState(0, 0, 0, 6, 1000)
 g.setupGame()
-g.evalProbability()
-g.playGame()
+for p in g.players:
+  print(g.freq_pair(p))
+# g.evalProbability()
+# g.playGame()
+
+
+# if __name__ == "__main__":
+#     import doctest
+    # doctest.testmod()

@@ -5,7 +5,6 @@ TO DO
 -- 5 card hand winner
 """
 
-
 from Deck import Deck
 from Player import Player
 
@@ -71,16 +70,15 @@ class GameState:
       self.bb = '' # big blind, left of sb
       
 
+      # This sets a bet and increases rollingBetSize for game logic
+      # Input: Betsize of user
+      # Output: N/A
     def setBet(self, betSize_):
       """
-      This sets a bet and increases rollingBetSize for game logic
-      Input: Betsize of user
-      Output: N/A
-      betSize = Current bet to be matched
-      rollingBetSize = Total of all bets.
+      Implement doctest here
       """
-      self.betSize = betSize_
-      self.rollingBetSize += betSize_
+      self.betSize = betSize_ # betSize = Current bet to be matched
+      self.rollingBetSize += betSize_ # rollingBetSize = Total of all bets.
 
     # Asks for a valid input from the user. Returns the action
     def askValidInput(self):
@@ -98,6 +96,10 @@ class GameState:
 
       return action
 
+
+    #####################
+    ### HAND ANALYSIS ###
+    #####################
     def PocketPairs(self, p):
       """
       >>> g.players[0].hand  
@@ -204,7 +206,43 @@ class GameState:
       if isFlush:
         return (self.combination(11,3) * self.combination(39, 2) ) / self.combination(50,5)
         
+
+    def freq_two_pair(self, Player):
+      return
+
         
+    # Finds if a pair exists for a Player
+    # Input: Player
+    # Output: If pair exists, returns an array with the rank of found pair. Else returns empty array
+    def freq_pair(self, Player):
+      """
+      >>> g = GameState(0, 0, 0, 6, 1000)
+      >>> g.setupGame()
+      >>> for p in g.players:
+      >>    g.freq_pair(p)
+      """
+      pairs = []
+      for rank in self.d.ranks:
+        freq = {}
+        for card in Player.hand:
+          # Don't use split() here. Iterate over string and grab first character
+          a = [str(i) for i in card]
+          # card = list(map(str, card))
+          p_rank = a[0]
+          
+          # Key not in map, add key
+          if p_rank not in freq:
+            freq[p_rank] = 0
+          
+          if p_rank == rank:
+            freq[p_rank] += 1
+
+          if (freq[p_rank] == 2):
+            pairs.append(p_rank)
+            print("Pair found!")
+        # print(freq[c])
+      
+      return pairs
         
       
     def evaluateWinner(self):
@@ -254,7 +292,13 @@ class GameState:
       if self.remainingPlayerTurns == 0 and self.roundNumber == 3:
           self.community_cards.append(self.d.deal())
           print(self.community_cards)
-      
+
+
+
+        
+  ######################
+  #### SETUP BLINDS ####
+  ######################
     def smallBlind(self, Player):
       Player.chips -= self.smallBlindAmt
       print("Player", Player.name, ": small blind")
@@ -268,7 +312,10 @@ class GameState:
         self.smallBlind(Player)
       if self.bb == Player:
         self.bigBlind(Player)
-      
+
+    ####################
+    #### GAME SETUP ####
+    ####################
     def setupGameMain(self):
       self.d.reset()
       self.d.shuffle()
@@ -300,8 +347,10 @@ class GameState:
       """
       # Append new player to player array
       self.players.append(Player(0, self.startingChips))
-      self.players[0].hand.append(self.d.deal())
-      self.players[0].hand.append(self.d.deal())
+      # self.players[0].hand.append(self.d.deal())
+      # self.players[0].hand.append(self.d.deal())
+      self.players[0].hand.append('As')
+      self.players[0].hand.append('Ac')
       self.sb = self.players[0]
       print("Player 0", ":", self.players[0].hand)
       
@@ -370,6 +419,7 @@ class GameState:
             print(currPlayer.name, "'s turn'")
             # Ask for a valid input
             action = self.askValidInput()
+            
             ################################
             ######## Player Actions ########
             ################################
