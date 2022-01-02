@@ -5,8 +5,7 @@ TO DO
 -- 5 card hand winner
 """
 
-from Deck import Deck
-from Player import Player
+from Deck import *
 
 class GameState:
     def __init__(self, currAction, betSize, rollingBetSize, remainingPlayerTurns, startingChips):
