@@ -108,6 +108,7 @@ class GameState:
       self.numPlayers = 0
       # Create deck
       self.d = Deck()
+      self.sorted_cards = self.d.deck_of_cards
       self.players = []
       self.players_copy = []
       self.roundNumber = 0 # Tracks if we are at the flop, turn, or river
@@ -116,6 +117,7 @@ class GameState:
       self.isEnd = False
       self.currPlayer_i=0
       self.playersLeft = 0
+
     """
     Set a bet. 
     Current bet to be matched is betSize.
@@ -137,7 +139,7 @@ class GameState:
 
       return action
 
-    def strengthOfHand(self):
+    def PocketPairs(self, p):
       """
       >>> g.players[0].hand  
       ['4c', '10d']
@@ -148,31 +150,79 @@ class GameState:
       queens = {'Qs': 120, 'Qd': 121, 'Qh':122, 'Qc': 123}
       jacks = {'Js': 110, 'Jd': 111, 'Jh':112, 'Jc': 113}
       tens = {'10s': 100, '10d': 101, '10h':102, '10c': 103}
+
+      first_card = p.hand[0]
+      second_card = p.hand[1]
       
-      for p in self.players:
-        # Check if hand has strong pairs
-        if p.hand[0] in aces and p.hand[1] in aces:
-          print(p.name, "Pocket Aces. Rockets!")
-        if p.hand[0] in kings and p.hand[1] in kings:
-          print(p.name, "Pocket Kings. Cowboys!")
-        if p.hand[0] in queens and p.hand[1] in queens:
-          print(p.name, "Pocket Queens. Ladies!")
-        if p.hand[0] in jacks and p.hand[1] in jacks:
-          print(p.name, "Pocket Jacks. Hooks!")
-        if p.hand[0] in tens and p.hand[1] in tens:
-          print(p.name, "Pocket Tens. Dimes!")
+      if first_card in aces and second_card in aces:
+        print(p.name, "Pocket Aces. Rockets!")
+        return True
+      if first_card in kings and second_card in kings:
+        print(p.name, "Pocket Kings. Cowboys!")
+      if first_card in queens and second_card in queens:
+        print(p.name, "Pocket Queens. Ladies!")
+      if first_card in jacks and second_card in jacks:
+        print(p.name, "Pocket Jacks. Hooks!")
+      if first_card in tens and second_card in tens:
+        print(p.name, "Pocket Tens. Dimes!")
 
-        if p.hand[0] in aces and p.hand[1] in kings or p.hand[1] in aces and p.hand[0] in kings:
-          print(p.name, "Ace King offsuit. Big Slick!")
-        if p.hand[0] in aces and p.hand[1] in queens or p.hand[1] in aces and p.hand[0] in queens:
-          print(p.name, "Ace Queen offsuit. Big Chick!")
-        if p.hand[0] in aces and p.hand[1] in jacks or p.hand[1] in aces and p.hand[0] in jacks:
-          print(p.name, "Ace Jack offsuit")
+      if first_card in aces and second_card in kings or second_card in aces and first_card in kings:
+        print(p.name, "Ace King offsuit. Big Slick!")
+      if first_card in aces and second_card in queens or second_card in aces and first_card in queens:
+        print(p.name, "Ace Queen offsuit. Big Chick!")
+      if first_card in aces and second_card in jacks or second_card in aces and first_card in jacks:
+        print(p.name, "Ace Jack offsuit")
 
+
+  
+      
+    def strengthMeter(self):
+      return
+
+    def evalProbability(self):
+      aces = {'As': 10, 'Ad': 11, 'Ah':12, 'Ac': 13}
+      kings = {'Ks': 130, 'Kd': 131, 'Kh':132, 'Kc': 133}
+      queens = {'Qs': 120, 'Qd': 121, 'Qh':122, 'Qc': 123}
+      jacks = {'Js': 110, 'Jd': 111, 'Jh':112, 'Jc': 113}
+      tens = {'10s': 100, '10d': 101, '10h':102, '10c': 103}
+      # 2D array. First index is rank. Second index is individual card's suit
+      # arr = [x auid []]
+      # self.sorted_cards = []
+      # ranks = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
+      # suits = ['h', 'd', 'c', 's']
+  
+      # for i in range(0,13): # rank
+      #   for j in range(0,4): # suits
+      #     self.sorted_cards.append(str(ranks[i]) + suits[j])
+      #     arr[i][j] = (str(ranks[i]) + suits[j])
+
+      # print( arr)
+      # Pair
+      # for card in self.d.deck_of_cards:
+      totalCardsDealt = len(self.d.deck_of_cards)
+      nonSameRankAsPair = totalCardsDealt - 2
+      p0 = self.players[0]
+      isTrue = self.PocketPairs(p0)
+
+      # We have pocket pairs and no one else has those ranks. Therefore there are 2 other cards in the deck. P(none of the next 5 cards is an Ace) == P(at least next 5 cards is an Ace). 48/50 * 47/49 & 46/48 * 45/47 * 44/46
+      ans = 1
+      for i in range(5):
+        print(nonSameRankAsPair-i, totalCardsDealt-i)
+        ans *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
+      # prob = ((totalCardsDealt) / totalCardsDealt) * ((totalCardsDealt-3) / totalCardsDealt-1) * ((totalCardsDealt-4) / totalCardsDealt-2) * ((totalCardsDealt-5) / totalCardsDealt-3) * ((totalCardsDealt-6) / totalCardsDealt-4)
+      print(ans * 100, "%")
         
+          
+        # Given a pair of Aces, find P(at least next 5 cards is an Ace)
+        # bestCase = # Other players don't have Ace. Aces in deck
+        # worstCase = # Other players have an Ace
+        
+        
+      
     # def evaluateWinner(self):
-      # if 
-            
+    #   for p in self.players:
+    #     return
+                    
         # Check hand against board for pairs
           
     
@@ -219,34 +269,23 @@ class GameState:
       
 
       
-    # def setupGame(self):
-    #   self.d.reset()
-    #   self.d.shuffle()
-    #   self.numPlayers = int(input("Enter total number of players: "))
-    #   self.startingChips = int(input("Enter starting chip size: "))
-    #   for i in range(self.numPlayers):
-    #     input_player_name = input("Enter name: ")
-    #     # Append new player to player array
-    #     self.players.append(Player(input_player_name, self.startingChips))
-    #     self.players[i].hand.append(self.d.deal())
-    #     self.players[i].hand.append(self.d.deal())
-    #     print("Player", i, ":", self.players[i].hand)
+    def setupGameMain(self):
+      self.d.reset()
+      self.d.shuffle()
+      self.numPlayers = int(input("Enter total number of players: "))
+      self.startingChips = int(input("Enter starting chip size: "))
+      for i in range(self.numPlayers):
+        input_player_name = input("Enter name: ")
+        # Append new player to player array
+        self.players.append(Player(input_player_name, self.startingChips))
+        self.players[i].hand.append(self.d.deal())
+        self.players[i].hand.append(self.d.deal())
+        print("Player", i, ":", self.players[i].hand)
 
-#  USING HAND CLASS
-#   def deal_initial(self, num_cards = 52):
-    # for i in range(self.numPlayers):
-    #   for j in range(0, 2):
-    #     if self.isEmpty(): break
-
-    #     player_name_input = input("Enter name: ")
-    #     Player(player_name_input, 1000)
-        
-    #     hand.add_card(self.deck_of_cards.pop())
     ########################################
     #### Temporary debugging setup game ####
     ########################################
 
-    
         
     def setupGame(self):
       # self.d.reset()
@@ -260,20 +299,20 @@ class GameState:
       self.players[0].hand.append(self.d.deal())
       print("Player 0", ":", self.players[0].hand)
 
-      self.players.append(Player(1, self.startingChips))
-      self.players[1].hand.append(self.d.deal())
-      self.players[1].hand.append(self.d.deal())
-      print("Player 1", ":", self.players[1].hand)
+      # self.players.append(Player(1, self.startingChips))
+      # self.players[1].hand.append(self.d.deal())
+      # self.players[1].hand.append(self.d.deal())
+      # print("Player 1", ":", self.players[1].hand)
 
-      self.players.append(Player(2, self.startingChips))
-      self.players[2].hand.append(self.d.deal())
-      self.players[2].hand.append(self.d.deal())
-      print("Player 2", ":", self.players[2].hand)
+      # self.players.append(Player(2, self.startingChips))
+      # self.players[2].hand.append(self.d.deal())
+      # self.players[2].hand.append(self.d.deal())
+      # print("Player 2", ":", self.players[2].hand)
       
-      self.players.append(Player(3, self.startingChips))
-      self.players[3].hand.append(self.d.deal())
-      self.players[3].hand.append(self.d.deal())
-      print("Player 3", ":", self.players[3].hand)
+      # self.players.append(Player(3, self.startingChips))
+      # self.players[3].hand.append(self.d.deal())
+      # self.players[3].hand.append(self.d.deal())
+      # print("Player 3", ":", self.players[3].hand)
       
 
     def playGame(self):
@@ -292,7 +331,7 @@ class GameState:
       # playersOut = 0
       # while we play less than 3 rounds and more than 1 player is in the game (no folded)
       while (i < 3 and self.playersLeft > 1 and not self.isEnd):
-        self.strengthOfHand()
+        self.strengthMeter()
         
         # j represents the current player, totalTurns represents total turns
         self.remainingPlayerTurns = self.numPlayers
@@ -377,14 +416,18 @@ class GameState:
           self.river()
           i+=1
 
+        else:
+          self.evaluateWinner()
 
 
     
   # def startGame():
 # g = GameState(0, 0, 0, numPlayers)
-for i in range(2):
-  print("######## New Game: ########", i)
-  g = GameState(0, 0, 0, 6, 1000)
-  g.setupGame()
-  g.playGame()
+numGames = 2
+# for i in range(numGames):
+  # print("######## New Game: ########", i)
+g = GameState(0, 0, 0, 6, 1000)
+g.setupGame()
+g.evalProbability()
+# g.playGame()
 
