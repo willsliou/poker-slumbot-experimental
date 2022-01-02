@@ -63,20 +63,6 @@ class GameState:
       self.bb = '' # big blind, left of sb
       
 
-    def smallBlind(self, Player):
-      Player.chips -= self.smallBlindAmt
-      print("small blind")
-
-    def bigBlind(self, Player):
-      Player.chips -= self.bigBlindAmt
-      print("big blind")
-
-    def dealBlinds(self, Player):
-      if self.sb == Player:
-        self.smallBlind(Player)
-      if self.bb == Player:
-        self.bigBlind(Player)
-
     """
     Set a bet. 
     Current bet to be matched is betSize.
@@ -255,7 +241,19 @@ class GameState:
           self.community_cards.append(self.d.deal())
           print(self.community_cards)
       
+    def smallBlind(self, Player):
+      Player.chips -= self.smallBlindAmt
+      print("Player", Player.name, ": small blind")
 
+    def bigBlind(self, Player):
+      Player.chips -= self.bigBlindAmt
+      print("Player", Player.name, ": big blind")
+
+    def dealBlinds(self, Player):
+      if self.sb == Player:
+        self.smallBlind(Player)
+      if self.bb == Player:
+        self.bigBlind(Player)
       
     def setupGameMain(self):
       self.d.reset()
@@ -274,7 +272,7 @@ class GameState:
     #### Temporary debugging setup game ####
     ########################################
 
-        
+
     def setupGame(self):
       # self.d.reset()
       self.d.shuffle()
