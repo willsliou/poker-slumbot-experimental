@@ -1,3 +1,11 @@
+"""
+TO DO
+-- Dealing order preflop, postflop
+-- hand strength meter
+-- 5 card hand winner
+"""
+
+
 from Deck import Deck
 from Player import Player
 
@@ -63,18 +71,24 @@ class GameState:
       self.bb = '' # big blind, left of sb
       
 
-    """
-    Set a bet. 
-    Current bet to be matched is betSize.
-    rollingBetSize is the total of all bets. Increase rollingBetSize by value of new bet.
-    """
     def setBet(self, betSize_):
+      """
+      This sets a bet and increases rollingBetSize for game logic
+      Input: Betsize of user
+      Output: N/A
+      betSize = Current bet to be matched
+      rollingBetSize = Total of all bets.
+      """
       self.betSize = betSize_
       self.rollingBetSize += betSize_
 
     # Asks for a valid input from the user. Returns the action
     def askValidInput(self):
-      # Ask for a valid action
+      """
+      This asks for a valid action from the user. A player cannot call if a bet is not placed. A player cannot check if a bet is placed.
+      Input: N/A
+      Output: N/A
+      """
       # If someone raised, change actions to Call, Raise, or Fold
       if self.betSize > 0:
         action = input("Choose an action. Call: 'c', Raise: 'b', Fold: 'f'")
