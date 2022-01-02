@@ -16,8 +16,8 @@ numGames = 2
   # print("######## New Game: ########", i)
 g = GameState(0, 0, 0, 6, 1000)
 g.setupGame()
-for p in g.players:
-  print(g.freq_pair(p))
+# for p in g.players:
+#   print(g.freq_pair(p))
 # g.evalProbability()
 # g.playGame()
 
