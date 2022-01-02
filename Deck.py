@@ -50,7 +50,7 @@ class Deck(Card):
 
   def move_cards(self, hand, num):
     for i in range(num):
-      hand.add_card()
+      hand.add_card(self.deck_of_cards.pop())
 
   def deal(self):
     return self.deck_of_cards.pop()
@@ -68,6 +68,7 @@ class Deck(Card):
     return '\n'.join(ans)
 
 
+
 # Hand inherits from Deck
 class Hand(Deck):
   """
@@ -81,10 +82,13 @@ class Hand(Deck):
   def add_card(self, card):
     self.deck_of_cards.append(card)
 
+  
   def __str__(self): 
       return "Hand is % s, ""b is % s" % (self.deck_of_cards, self.name)
 
+
 class Frequency(dict):
+  "Frequency map of each item to a key value pair"
   def __init__(self, arr = []):
     for i in arr:
       self.count()
@@ -95,12 +99,30 @@ class Frequency(dict):
     if self[item] == 0:
       del self[item]
 
+class FiveCardPokerHand(Hand):
+
+  def __init__(self):
+    self.ranks = ''
+    self.suits = ''
+    self.sorted = []
 
 
+  
+  self.ranks = Frequency()
+  self.suits = Frequency()
+
+  for c in self.deck_of_cards:
+    self.suits.count(c.suit)
+    self.ranks.count(c.rank)
+
+  self.sorted = self.ranks.values()
+  self.sorted.sort(reverse=True)
 
 
+  def has_highcard(self):
+    return len(self.deck_of_cards)
 
-
+  
 
 # Player has a Hand, inherits from GameState
 class Player(Hand):
