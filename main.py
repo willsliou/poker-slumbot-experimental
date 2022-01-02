@@ -185,6 +185,8 @@ class GameState:
       queens = {'Qs': 120, 'Qd': 121, 'Qh':122, 'Qc': 123}
       jacks = {'Js': 110, 'Jd': 111, 'Jh':112, 'Jc': 113}
       tens = {'10s': 100, '10d': 101, '10h':102, '10c': 103}
+      
+      p0 = self.players[0]
       # 2D array. First index is rank. Second index is individual card's suit
       # arr = [x auid []]
       # self.sorted_cards = []
@@ -199,21 +201,25 @@ class GameState:
       # print( arr)
       # Pair
       # for card in self.d.deck_of_cards:
-      totalCardsDealt = len(self.d.deck_of_cards)
-      nonSameRankAsPair = totalCardsDealt - 2
-      p0 = self.players[0]
-      isTrue = self.PocketPairs(p0)
 
-      # Given a pair of Aces, find P(at least next 5 cards is an Ace)
-      # We have pocket pairs and no one else has those ranks. Therefore there are 2 other cards in the deck. P(none of the next 5 cards is an Ace) == P(at least next 5 cards is an Ace). 48/50 * 47/49 & 46/48 * 45/47 * 44/46
-      bestCase = 1 # Other players don't have Ace. Aces in deck
-      for i in range(5):
-        print(nonSameRankAsPair-i, totalCardsDealt-i)
-        bestCase *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
-      bestCase = 1-bestCase # Find Complement of not getting an Ace
-      print(bestCase * 100, "% of landing another card of the same rank to match your pair.")
+      # If Pocket pair, calculate P(Landing a triple of your rank in the next 5 turns)
+      if (self.PocketPairs(p0)):
+        totalCardsDealt = len(self.d.deck_of_cards)
+        nonSameRankAsPair = totalCardsDealt - 2
+  
+        # Given a pair of Aces, find P(at least next 5 cards is an Ace)
+        # We have pocket pairs and no one else has those ranks. Therefore there are 2 other cards in the deck. P(none of the next 5 cards is an Ace) == P(at least next 5 cards is an Ace). 48/50 * 47/49 & 46/48 * 45/47 * 44/46
+        bestCase = 1 # Other players don't have Ace. Aces in deck
+        for i in range(5):
+          print(nonSameRankAsPair-i, totalCardsDealt-i)
+          bestCase *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
+        bestCase = 1-bestCase # Find Complement of not getting an Ace
+        print(bestCase * 100, "% of landing another card of the same rank to match your pair.")
         
-          
+
+        isFlush = True
+        if isFlush:
+          return
         # worstCase = # Other players have an Ace
         
         
