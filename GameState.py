@@ -344,45 +344,57 @@ class GameState:
       DEALING ORDER (CLOCKWISE)
       SB, BB, UTG, HJ, CO, BTN
       """
+
+      d = Deck()
+      d.shuffle()
+      for player in range(6):
+        hand = Hand()
+        d.move_cards(hand, 2) # move 2 cards
+        hand.sort()
+        print(hand)
+        
+
+      
+
       # Append new player to player array
-      self.players.append(Player(0, self.startingChips))
-      # self.players[0].hand.append(self.d.deal())
-      # self.players[0].hand.append(self.d.deal())
-      self.players[0].hand.append('As')
-      self.players[0].hand.append('Ac')
-      self.sb = self.players[0]
-      print("Player 0", ":", self.players[0].hand)
+      # self.players.append(Player(0, self.startingChips))
+      # # self.players[0].hand.append(self.d.deal())
+      # # self.players[0].hand.append(self.d.deal())
+      # self.players[0].hand.append('As')
+      # self.players[0].hand.append('Ac')
+      # self.sb = self.players[0]
+      # print("Player 0", ":", self.players[0].hand)
       
-      self.players.append(Player(1, self.startingChips))
-      self.players[1].hand.append(self.d.deal())
-      self.players[1].hand.append(self.d.deal())
-      self.bb = self.players[1]
-      print("Player 1", ":", self.players[1].hand)
+      # self.players.append(Player(1, self.startingChips))
+      # self.players[1].hand.append(self.d.deal())
+      # self.players[1].hand.append(self.d.deal())
+      # self.bb = self.players[1]
+      # print("Player 1", ":", self.players[1].hand)
 
-      self.players.append(Player(2, self.startingChips))
-      self.players[2].hand.append(self.d.deal())
-      self.players[2].hand.append(self.d.deal())
-      self.utg = self.players[2]
-      print("Player 2", ":", self.players[2].hand)
+      # self.players.append(Player(2, self.startingChips))
+      # self.players[2].hand.append(self.d.deal())
+      # self.players[2].hand.append(self.d.deal())
+      # self.utg = self.players[2]
+      # print("Player 2", ":", self.players[2].hand)
       
-      self.players.append(Player(3, self.startingChips))
-      self.players[3].hand.append(self.d.deal())
-      self.players[3].hand.append(self.d.deal())
-      self.hj = self.players[3]
-      print("Player 3", ":", self.players[3].hand)
+      # self.players.append(Player(3, self.startingChips))
+      # self.players[3].hand.append(self.d.deal())
+      # self.players[3].hand.append(self.d.deal())
+      # self.hj = self.players[3]
+      # print("Player 3", ":", self.players[3].hand)
 
-      self.players.append(Player(4, self.startingChips))
-      self.players[4].hand.append(self.d.deal())
-      self.players[4].hand.append(self.d.deal())
-      self.co = self.players[4]
-      print("Player 4", ":", self.players[4].hand)
+      # self.players.append(Player(4, self.startingChips))
+      # self.players[4].hand.append(self.d.deal())
+      # self.players[4].hand.append(self.d.deal())
+      # self.co = self.players[4]
+      # print("Player 4", ":", self.players[4].hand)
 
 
-      self.players.append(Player(5, self.startingChips))
-      self.players[5].hand.append(self.d.deal())
-      self.players[5].hand.append(self.d.deal())
-      self.btn = self.players[5]
-      print("Player 5", ":", self.players[5].hand)
+      # self.players.append(Player(5, self.startingChips))
+      # self.players[5].hand.append(self.d.deal())
+      # self.players[5].hand.append(self.d.deal())
+      # self.btn = self.players[5]
+      # print("Player 5", ":", self.players[5].hand)
 
       # Deal out Small and Big Blinds
       for p in self.players:
