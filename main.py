@@ -16,5 +16,5 @@ numGames = 2
 g = GameState(0, 0, 0, 6, 1000)
 g.setupGame()
 g.evalProbability()
-# g.playGame()
+g.playGame()
 

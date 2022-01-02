@@ -8,23 +8,30 @@ class GameState:
       rollingBetSize = total of all bets during a single turn
       remainingPlayerTurns = Tracks remaining number of turns after a player has bet
       """
-      self.currAction = currAction
-      self.pot = 0
-      self.betSize = betSize
-      self.rollingBetSize = rollingBetSize
-      self.remainingPlayerTurns = remainingPlayerTurns
-      self.numPlayers = 0
       # Create deck
       self.d = Deck()
       self.sorted_cards = self.d.deck_of_cards
-      self.players = []
-      self.players_copy = []
-      self.roundNumber = 0 # Tracks if we are at the flop, turn, or river
+      # Setup game variables
+      self.numPlayers = 0
       self.community_cards = [] # board
       self.startingChips = startingChips
+      self.currAction = currAction
+      self.players = []
+      # Setup game betting
+      self.bigBlind = 100
+      self.smallBlind = 50
+      # Game statistics
+      self.pot = 0
+      self.betSize = betSize
+      self.rollingBetSize = rollingBetSize
+      # Game Logic
+      self.remainingPlayerTurns = remainingPlayerTurns
+      self.players_copy = []
+      self.roundNumber = 0 # Tracks if we are at the flop, turn, or river
       self.isEnd = False
       self.currPlayer_i=0
       self.playersLeft = 0
+      
 
     """
     Set a bet. 
@@ -156,11 +163,11 @@ class GameState:
         
         
       
-    # def evaluateWinner(self):
-    #   for p in self.players:
-    #     return
+    def evaluateWinner(self):
+      # Check hand against board for pairs
+      for p in self.players:
+        return
                     
-        # Check hand against board for pairs
           
     
     ##################################
@@ -236,20 +243,20 @@ class GameState:
       self.players[0].hand.append(self.d.deal())
       print("Player 0", ":", self.players[0].hand)
 
-      # self.players.append(Player(1, self.startingChips))
-      # self.players[1].hand.append(self.d.deal())
-      # self.players[1].hand.append(self.d.deal())
-      # print("Player 1", ":", self.players[1].hand)
+      self.players.append(Player(1, self.startingChips))
+      self.players[1].hand.append(self.d.deal())
+      self.players[1].hand.append(self.d.deal())
+      print("Player 1", ":", self.players[1].hand)
 
-      # self.players.append(Player(2, self.startingChips))
-      # self.players[2].hand.append(self.d.deal())
-      # self.players[2].hand.append(self.d.deal())
-      # print("Player 2", ":", self.players[2].hand)
+      self.players.append(Player(2, self.startingChips))
+      self.players[2].hand.append(self.d.deal())
+      self.players[2].hand.append(self.d.deal())
+      print("Player 2", ":", self.players[2].hand)
       
-      # self.players.append(Player(3, self.startingChips))
-      # self.players[3].hand.append(self.d.deal())
-      # self.players[3].hand.append(self.d.deal())
-      # print("Player 3", ":", self.players[3].hand)
+      self.players.append(Player(3, self.startingChips))
+      self.players[3].hand.append(self.d.deal())
+      self.players[3].hand.append(self.d.deal())
+      print("Player 3", ":", self.players[3].hand)
       
 
     def playGame(self):
@@ -280,7 +287,7 @@ class GameState:
           if not currPlayer.isFolded:
             print(currPlayer.name, "'s turn'")
             # Ask for a valid input
-            action = g.askValidInput()
+            action = self.askValidInput()
             ################################
             ######## Player Actions ########
             ################################
@@ -294,14 +301,24 @@ class GameState:
                 
             # Player bets, ask for input. Call Player.bet() to reduce individual player chip size. Increase global bet size.
             elif action == 'b':
-              betSize_ = int(input("Input your bet size: "))
+              betSizeInput = input("MinBet: 'm', HalfPot: 'h', FullPot: 'f', AllIn: 'a' ")
               ########### Betting options ###########
-              # Minimum Bet      
+              # Minimum Bet
+              if betSizeInput == 'm':
+                betSize_ = self.bigBlind
               # Half Pot
+              if betSizeInput == 'h':
+                betSize_ = self.pot / 2
               # Full Pot
-              # if betSize_
+              if betSizeInput == 'f':
+                betSize_ = self.pot
               # Shove all in
+              if betSizeInput == 'a':
+                betSize_ = currPlayer.chips
+
+              # Reduce current chips
               currPlayer.bet(betSize_)
+              # Change rolling sum for game logic
               self.setBet(betSize_)
               self.remainingPlayerTurns = len(self.players) # Reset number of rounds from starting position
               print("Current bet to be matched:", self.betSize)
@@ -320,8 +337,8 @@ class GameState:
                 for p in self.players:
                   if p.isFolded == False:
                     self.endTurnAddPot() # Add all bets into pot
-                    p.chips = g.pot
-                    print("Updating ", p.name, "'s chips to$", g.pot)
+                    p.chips = self.pot
+                    print("Updating ", p.name, "'s chips to$", self.pot)
                 self.isEnd = True
                 print("All players have folded.")
                 break
