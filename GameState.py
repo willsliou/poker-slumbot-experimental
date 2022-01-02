@@ -17,9 +17,6 @@ class GameState:
       self.startingChips = startingChips
       self.currAction = currAction
       self.players = []
-      # Setup game betting
-      self.bigBlind = 100
-      self.smallBlind = 50
       # Game statistics
       self.pot = 0
       self.betSize = betSize
@@ -31,7 +28,54 @@ class GameState:
       self.isEnd = False
       self.currPlayer_i=0
       self.playersLeft = 0
+
+      # Setup game betting
+      self.bigBlindAmt = 100
+      self.smallBlindAmt = 50
+      # Game Positions
+      # All players in order for a 10-max table, sitting to the left, starting from dealer
+      # self.btn = '' # left of dealer, Player0
+      # self.sb = '' # small blind, left of btn
+      # self.bb = '' # big blind, left of sb
+      # self.utg = '' # Early position(EP)/under the gun, left of bb
+      # self.utg1 = '' # under the gun + 1
+      # self.utg2 = '' # under the gun + 2
+      # self.mp = '' # middle position, left of utg2
+      # self.mp2 = '' # middle position 2
+      # self.mp3 = '' # middle position 3
+      # self.co = '' # cutoff, right of dealer
+
+      # 6-max table
+            # All players in order for a 10-max table, sitting to the left, starting from dealer
+
+      """
+      Preflop order (no straddle)
+      UTG, HJ, CO, BTN, SB, BB
+      Postflop Order
+      SB, BB, UTG, HJ, CO, BTN
+      """
+      # Probably only need btn to keep track of order
+      self.utg = '' # Early position(EP)/under the gun, left of bb
+      self.hj = '' # hijack, right of dealer
+      self.co = '' # cutoff, right of dealer
+      self.btn = '' # left of dealer, Player0
+      self.sb = '' # small blind, left of btn
+      self.bb = '' # big blind, left of sb
       
+
+    def smallBlind(self, Player):
+      Player.chips -= self.smallBlindAmt
+      print("small blind")
+
+    def bigBlind(self, Player):
+      Player.chips -= self.bigBlindAmt
+      print("big blind")
+
+    def dealBlinds(self, Player):
+      if self.sb == Player:
+        self.smallBlind(Player)
+      if self.bb == Player:
+        self.bigBlind(Player)
 
     """
     Set a bet. 
@@ -237,26 +281,52 @@ class GameState:
       self.numPlayers = 4
       self.startingChips = 1000
 
+
+      """
+      DEALING ORDER (CLOCKWISE)
+      SB, BB, UTG, HJ, CO, BTN
+      """
       # Append new player to player array
       self.players.append(Player(0, self.startingChips))
       self.players[0].hand.append(self.d.deal())
       self.players[0].hand.append(self.d.deal())
+      self.sb = self.players[0]
       print("Player 0", ":", self.players[0].hand)
-
+      
       self.players.append(Player(1, self.startingChips))
       self.players[1].hand.append(self.d.deal())
       self.players[1].hand.append(self.d.deal())
+      self.bb = self.players[1]
       print("Player 1", ":", self.players[1].hand)
 
       self.players.append(Player(2, self.startingChips))
       self.players[2].hand.append(self.d.deal())
       self.players[2].hand.append(self.d.deal())
+      self.utg = self.players[2]
       print("Player 2", ":", self.players[2].hand)
       
       self.players.append(Player(3, self.startingChips))
       self.players[3].hand.append(self.d.deal())
       self.players[3].hand.append(self.d.deal())
+      self.hj = self.players[3]
       print("Player 3", ":", self.players[3].hand)
+
+      self.players.append(Player(4, self.startingChips))
+      self.players[4].hand.append(self.d.deal())
+      self.players[4].hand.append(self.d.deal())
+      self.co = self.players[4]
+      print("Player 4", ":", self.players[4].hand)
+
+
+      self.players.append(Player(5, self.startingChips))
+      self.players[5].hand.append(self.d.deal())
+      self.players[5].hand.append(self.d.deal())
+      self.btn = self.players[5]
+      print("Player 5", ":", self.players[5].hand)
+
+      # Deal out Small and Big Blinds
+      for p in self.players:
+        self.dealBlinds(p)
       
 
     def playGame(self):
@@ -282,7 +352,7 @@ class GameState:
         # while players still have turns to play and more than 1 player is in the game (not folded)
         while (self.remainingPlayerTurns > 0 and self.playersLeft > 1 and not self.isEnd):          
           currPlayer = self.players[self.currPlayer_i % len(self.players)] # Cycles through players
-
+            
           # If current player has not folded, ask for input
           if not currPlayer.isFolded:
             print(currPlayer.name, "'s turn'")
@@ -302,19 +372,27 @@ class GameState:
             # Player bets, ask for input. Call Player.bet() to reduce individual player chip size. Increase global bet size.
             elif action == 'b':
               betSizeInput = input("MinBet: 'm', HalfPot: 'h', FullPot: 'f', AllIn: 'a' ")
+              #######################################
               ########### Betting options ###########
+              #######################################
               # Minimum Bet
               if betSizeInput == 'm':
                 betSize_ = self.bigBlind
+                print(currPlayer.name, "Min Bets", betSize_)
               # Half Pot
               if betSizeInput == 'h':
                 betSize_ = self.pot / 2
+                print(currPlayer.name, "Bets Half Pot", betSize_)
               # Full Pot
               if betSizeInput == 'f':
                 betSize_ = self.pot
+                self.currAction = 'b' + str(self.pot)
+                print(currPlayer.name, "Bets Full Pot", betSize_)
               # Shove all in
               if betSizeInput == 'a':
                 betSize_ = currPlayer.chips
+                self.currAction = 'ba'
+                print(currPlayer.name, "Shoves and Goes ALL IN!!!", betSize_)
 
               # Reduce current chips
               currPlayer.bet(betSize_)
