@@ -1,6 +1,9 @@
 from Deck import Deck
 # Hand inherits from Deck
 class Hand(Deck):
+  """
+  Represents a player's hand of cards
+  """
   def __init__(self, name = ''):
     self.deck_of_cards = []
     self.name = name
