@@ -1,4 +1,5 @@
 import random
+import itertools
 
 class Card:
   suits = ['h', 'd', 'c', 's']
@@ -179,6 +180,17 @@ class GameState:
     def strengthMeter(self):
       return
 
+
+    def factorial(self, n):
+      ans = 1
+      for i in range(n, 0, -1):
+        ans*=i
+      return ans
+
+    def combination(self, n, r):
+      return (self.factorial(n) / (self.factorial(r) * self.factorial(n-r)) )
+        
+        
     def evalProbability(self):
       aces = {'As': 10, 'Ad': 11, 'Ah':12, 'Ac': 13}
       kings = {'Ks': 130, 'Kd': 131, 'Kh':132, 'Kc': 133}
@@ -211,16 +223,29 @@ class GameState:
         # We have pocket pairs and no one else has those ranks. Therefore there are 2 other cards in the deck. P(none of the next 5 cards is an Ace) == P(at least next 5 cards is an Ace). 48/50 * 47/49 & 46/48 * 45/47 * 44/46
         bestCase = 1 # Other players don't have Ace. Aces in deck
         for i in range(5):
-          print(nonSameRankAsPair-i, totalCardsDealt-i)
           bestCase *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
         bestCase = 1-bestCase # Find Complement of not getting an Ace
         print(bestCase * 100, "% of landing another card of the same rank to match your pair.")
-        
-
-        isFlush = True
-        if isFlush:
-          return
         # worstCase = # Other players have an Ace
+
+
+
+      # Probabilty of the one and only two pair. 13c1 for the duplicate value * 12c3 of the non-duplicate values.
+        # (13c3 * 3c1) * (4c2 * 4c2) * (4c1) / (52c5)
+        print( (self.combination(13,3) * self.combination(3,1) * self.combination(4,2) * self.combination(4,2) * self.combination(4,1) ) / self.combination(52,5) )
+
+        # Gutshot Flush. Have 2 suits of the same kind. Need 3 more of the same suit to make a flush. 
+        # Given that we are dealt two spades, find, P(at least 3 spades appear.)
+        # P(at least 3 spades appear) == P(No spades appear)
+        # P(no spades appearing) = 11/50 * 10/49 * 9/48 * 39/47 * 38/46
+        # SSSXX
+        # 5! / 3!2!
+        
+      
+      isFlush = True
+      if isFlush:
+        return (self.combination(11,3) * self.combination(39, 2) ) / self.combination(50,5)
+        
         
         
       
