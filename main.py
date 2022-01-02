@@ -204,17 +204,16 @@ class GameState:
       p0 = self.players[0]
       isTrue = self.PocketPairs(p0)
 
+      # Given a pair of Aces, find P(at least next 5 cards is an Ace)
       # We have pocket pairs and no one else has those ranks. Therefore there are 2 other cards in the deck. P(none of the next 5 cards is an Ace) == P(at least next 5 cards is an Ace). 48/50 * 47/49 & 46/48 * 45/47 * 44/46
-      ans = 1
+      bestCase = 1 # Other players don't have Ace. Aces in deck
       for i in range(5):
         print(nonSameRankAsPair-i, totalCardsDealt-i)
-        ans *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
-      # prob = ((totalCardsDealt) / totalCardsDealt) * ((totalCardsDealt-3) / totalCardsDealt-1) * ((totalCardsDealt-4) / totalCardsDealt-2) * ((totalCardsDealt-5) / totalCardsDealt-3) * ((totalCardsDealt-6) / totalCardsDealt-4)
-      print(ans * 100, "%")
+        bestCase *= (nonSameRankAsPair-i) / (totalCardsDealt-i)
+      bestCase = 1-bestCase # Find Complement of not getting an Ace
+      print(bestCase * 100, "% of landing another card of the same rank to match your pair.")
         
           
-        # Given a pair of Aces, find P(at least next 5 cards is an Ace)
-        # bestCase = # Other players don't have Ace. Aces in deck
         # worstCase = # Other players have an Ace
         
         
