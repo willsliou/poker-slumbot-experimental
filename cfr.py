@@ -8,7 +8,7 @@ class CounterfactualRegretMinimizer:
 
 
 # Libratus - CMU
-# 1. blueprint strategy, 2. nested subgame solving 3. 
+# 1. blueprint strategy, 2. nested subgame solving
   def __init__(self):
     self.v1 = []
     self.v2 = []
